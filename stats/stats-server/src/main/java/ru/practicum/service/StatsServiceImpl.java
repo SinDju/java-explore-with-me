@@ -36,14 +36,16 @@ public class StatsServiceImpl implements StatsService {
         LocalDateTime startDate = parseDate(start);
         LocalDateTime endDate = parseDate(end);
         if (endDate.isBefore(startDate)) {
-            log.info("Error detected, start time {}, end time {}", start, end);
-            throw new InvalidParameterException("End time no be after start time");
+            log.info("Неккоректный формат дат start time {} и end time {}", start, end);
+            throw new InvalidParameterException("Неккоректный формат дат");
         }
-        if (!unique) {
-            return StatsDtoMapper.toDtoViewStatsDtoList(repository.getAllByUris(startDate, endDate, uris));
+        if (uris != null && uris.size() > 0) {
+            return unique ? StatsDtoMapper.toDtoViewStatsDtoList(repository.getAllByUrisUniqueIp(startDate, endDate,
+                    uris)) : StatsDtoMapper.toDtoViewStatsDtoList(repository.getAllByUris(startDate, endDate, uris));
         }
 
-        return StatsDtoMapper.toDtoViewStatsDtoList(repository.getAllByUrisUniqueIp(startDate, endDate, uris));
+        return unique ? StatsDtoMapper.toDtoViewStatsDtoList(repository.getAllByUniqueIpNotUris(startDate, endDate)) :
+                StatsDtoMapper.toDtoViewStatsDtoList(repository.getAllNotUris(startDate, endDate));
     }
 
     private LocalDateTime parseDate(String date) {

@@ -11,18 +11,36 @@ import java.util.List;
 public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
 
     @Query
-            ("select s.app, s.uri, count(s.ip) from EndpointHit s " +
-                    "where s.timestamp BETWEEN ?1 and ?2 " +
-                    "and (s.uri in ?3) " +
-                    "GROUP BY s.app, s.uri " +
-                    "ORDER BY COUNT(s.ip) DESC")
+            ("SELECT new ru.practicum.model.ViewStats(eh.app, eh.uri, COUNT(eh.ip)) " +
+                    "FROM EndpointHit AS eh " +
+                    "WHERE eh.timestamp BETWEEN ?1 AND ?2 " +
+                    "AND (eh.uri in ?3) " +
+                    "GROUP BY eh.app, eh.uri " +
+                    "ORDER BY COUNT(eh.ip) DESC")
     List<ViewStats> getAllByUris(LocalDateTime start, LocalDateTime end, List<String> uris);
 
     @Query
-            ("select s.app, s.uri, count(DISTINCT s.ip) from EndpointHit s " +
-                    "where s.timestamp BETWEEN ?1 and ?2 " +
-                    "and (s.uri in ?3) " +
-                    "GROUP BY s.app, s.uri " +
-                    "ORDER BY COUNT(DISTINCT s.ip) DESC")
+            ("SELECT new ru.practicum.model.ViewStats(eh.app, eh.uri, COUNT(eh.ip)) " +
+                    "FROM EndpointHit AS eh " +
+                    "WHERE eh.timestamp BETWEEN ?1 AND ?2 " +
+                    "GROUP BY eh.app, eh.uri " +
+                    "ORDER BY COUNT(eh.ip) DESC")
+    List<ViewStats> getAllNotUris(LocalDateTime start, LocalDateTime end);
+
+    @Query
+            ("SELECT new ru.practicum.model.ViewStats(eh.app, eh.uri, COUNT(distinct eh.ip)) " +
+                    "FROM EndpointHit AS eh " +
+                    "WHERE eh.timestamp BETWEEN ?1 AND ?2 " +
+                    "AND (eh.uri in ?3) " +
+                    "GROUP BY eh.app, eh.uri " +
+                    "ORDER BY COUNT(distinct eh.ip) DESC")
     List<ViewStats> getAllByUrisUniqueIp(LocalDateTime start, LocalDateTime end, List<String> uris);
+
+    @Query
+            ("SELECT new ru.practicum.model.ViewStats(eh.app, eh.uri, COUNT(distinct eh.ip)) " +
+                    "FROM EndpointHit AS eh " +
+                    "WHERE eh.timestamp BETWEEN ?1 AND ?2 " +
+                    "GROUP BY eh.app, eh.uri " +
+                    "ORDER BY COUNT(distinct eh.ip) DESC")
+    List<ViewStats> getAllByUniqueIpNotUris(LocalDateTime start, LocalDateTime end);
 }

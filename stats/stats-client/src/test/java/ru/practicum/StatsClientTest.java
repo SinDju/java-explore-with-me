@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Unit test for simple StatsClient.
+ * Unit test for simple EndpointHitClient.
  */
 public class StatsClientTest
     extends TestCase

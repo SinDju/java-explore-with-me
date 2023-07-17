@@ -21,7 +21,7 @@ public class StatsController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/hit")
-    public void saveStats(@RequestBody @Validated EndpointHitDto endpointHitDto) {
+    public void saveStats(EndpointHitDto endpointHitDto) {
         log.info("Сохранена информация по hit: {}", endpointHitDto);
         server.saveStats(endpointHitDto);
     }
@@ -34,5 +34,4 @@ public class StatsController {
         log.info("Get запрос на получение статистики по посещениям");
         return server.getStats(start, end, uris, unique);
     }
-
 }

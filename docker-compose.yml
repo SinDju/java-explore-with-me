@@ -14,17 +14,6 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
 
-  stats-client:
-      build: ./stats/stats-client
-      image: stats-client-image
-      container_name: stats-client-container
-      ports:
-        - "9091:9091"
-      depends_on:
-        - stats-server
-      environment:
-        - STATS_SERVER_URL=http://stats-server:9090
-
   stats-db:
     image: postgres:14-alpine
     container_name: my_stats-db
