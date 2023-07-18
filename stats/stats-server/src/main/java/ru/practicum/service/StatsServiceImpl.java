@@ -32,7 +32,6 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStatsDto> getStats(String start, String end, List<String> uris, Boolean unique) {
-        List<ViewStatsDto> viewStatsDtos = new ArrayList<>();
         LocalDateTime startDate = parseDate(start);
         LocalDateTime endDate = parseDate(end);
         if (endDate.isBefore(startDate)) {

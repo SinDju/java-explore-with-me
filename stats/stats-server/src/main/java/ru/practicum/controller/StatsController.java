@@ -9,6 +9,7 @@ import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.service.StatsService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class StatsController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/hit")
-    public void saveStats(EndpointHitDto endpointHitDto) {
+    public void saveStats(@Valid @RequestBody EndpointHitDto endpointHitDto) {
         log.info("Сохранена информация по hit: {}", endpointHitDto);
         server.saveStats(endpointHitDto);
     }
