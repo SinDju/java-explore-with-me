@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>stats-dto</artifactId>
+    <packaging>pom</packaging>
 
     <name>stats-dto</name>
     <url>http://maven.apache.org</url>

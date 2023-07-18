@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>stats-client</artifactId>
+    <packaging>pom</packaging>
 
     <name>stats-client</name>
     <url>http://maven.apache.org</url>
