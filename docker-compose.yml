@@ -9,8 +9,8 @@ services:
     depends_on:
       - stats-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/stats
-      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/statistics
+      - SPRING_DATASOURCE_USERNAME=stats
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
 
@@ -20,8 +20,8 @@ services:
     ports:
       - "6541:5432"
     environment:
-      - POSTGRES_DB=stats
-      - POSTGRES_USER=root
+      - POSTGRES_DB=statistics
+      - POSTGRES_USER=stats
       - POSTGRES_PASSWORD=root
 
   ewm-service:
