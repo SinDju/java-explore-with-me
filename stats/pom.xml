@@ -7,6 +7,12 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <modules>
+        <module>stats-dto</module>
+        <module>stats-server </module>
+        <module>stats-client</module>
+    </modules>
+
     <artifactId>stats</artifactId>
     <packaging>pom</packaging>
 
@@ -15,6 +21,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
+        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
