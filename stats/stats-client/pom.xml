@@ -8,6 +8,7 @@
     </parent>
 
     <artifactId>stats-client</artifactId>
+    <packaging>jar</packaging>
 
     <name>stats-client</name>
     <url>http://maven.apache.org</url>
