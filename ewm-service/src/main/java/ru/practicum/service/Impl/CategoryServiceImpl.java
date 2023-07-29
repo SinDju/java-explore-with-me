@@ -22,7 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> getCategories(Integer from, Integer size) {
-        PageRequest pageRequest = PageRequest.of(from/size, size);
+        PageRequest pageRequest = PageRequest.of(from / size, size);
         return categoryRepository.findAll(pageRequest)
                 .stream().map(CategoryMapper::toCategoryDto).collect(Collectors.toList());
     }

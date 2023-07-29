@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.CompilationDto;
 import ru.practicum.service.CompilationService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/compilations")
 @RequiredArgsConstructor
@@ -14,9 +16,9 @@ public class CompilationsControllerPublic {
     private final CompilationService compilationService;
 
     @GetMapping
-    public CompilationDto getCompilations(@RequestParam(value = "pinned", required = false) Boolean pinned,
-                                          @RequestParam(defaultValue = "0") Integer from,
-                                          @RequestParam(defaultValue = "10") Integer size) {
+    public List<CompilationDto> getCompilations(@RequestParam(value = "pinned", required = false) Boolean pinned,
+                                                @RequestParam(defaultValue = "0") Integer from,
+                                                @RequestParam(defaultValue = "10") Integer size) {
         log.info("GET запрос на удаление подборки событий");
         return compilationService.getCompilations(pinned, from, size);
     }
