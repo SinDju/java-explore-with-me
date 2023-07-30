@@ -5,10 +5,9 @@ import lombok.*;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@Getter
-@Setter
+@NoArgsConstructor
 @Builder
 public class UpdateCompilationDto {
     private Long id;

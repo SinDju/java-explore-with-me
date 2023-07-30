@@ -9,6 +9,7 @@ import ru.practicum.dto.EventFullDto;
 import ru.practicum.dto.UpdateEventAdminRequest;
 import ru.practicum.service.EventService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -41,7 +42,7 @@ public class EventControllerAdmin {
 
     @PatchMapping("/{eventId}")
     public EventFullDto updateEventByAdmin(@PathVariable(value = "eventId") @Min(1) Long eventId,
-                                           @RequestBody UpdateEventAdminRequest inputUpdate) {
+                                           @RequestBody @Valid UpdateEventAdminRequest inputUpdate) {
         log.info("PATCH запрос на редактирование списка событий");
         return eventService.updateEventFromAdmin(eventId, inputUpdate);
     }

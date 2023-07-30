@@ -1,13 +1,12 @@
 package ru.practicum.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class CaseUpdatedStatusDto {
     private List<Long> idsFromUpdateStatus;

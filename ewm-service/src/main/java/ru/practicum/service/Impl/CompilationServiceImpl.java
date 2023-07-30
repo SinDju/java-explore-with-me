@@ -2,7 +2,10 @@ package ru.practicum.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.CompilationDto;
 import ru.practicum.dto.NewCompilationDto;
 import ru.practicum.dto.UpdateCompilationDto;
@@ -21,10 +24,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
 
+    @Transactional
     @Override
     public CompilationDto addCompilation(NewCompilationDto compilationDto) {
         Compilation compilation = CompilationMapper.toCompilation(compilationDto);
@@ -37,10 +42,11 @@ public class CompilationServiceImpl implements CompilationService {
         } else {
             compilation.setEvents(new ArrayList<>());
         }
-        final Compilation compilationAfterSave = compilationRepository.save(compilation);
+        Compilation compilationAfterSave = compilationRepository.save(compilation);
         return CompilationMapper.toDto(compilationAfterSave);
     }
 
+    @Transactional
     @Override
     public CompilationDto updateCompilation(Long compId, UpdateCompilationDto update) {
         final Compilation compilation = checkCompilation(compId);
@@ -56,6 +62,7 @@ public class CompilationServiceImpl implements CompilationService {
         return CompilationMapper.toDto(compilationAfterSave);
     }
 
+    @Transactional
     @Override
     public void deleteCompilation(Long compId) {
         checkCompilation(compId);
@@ -63,9 +70,9 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
-        PageRequest pageRequest = PageRequest.of(from / size, size);
-        return compilationRepository.findAllByPinnedIs(pinned, pageRequest)
+    public List<CompilationDto> getCompilations(boolean pinned, int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "id"));
+        return compilationRepository.findAllByPinnedIs(pinned, pageable)
                 .stream().map(CompilationMapper::toDto).collect(Collectors.toList());
     }
 

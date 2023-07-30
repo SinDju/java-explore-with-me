@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS categories
 CREATE TABLE IF NOT EXISTS location
 (
     id                 BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY UNIQUE,
-    lat                NUMERIC                     NOT NULL,
-    lon                NUMERIC                     NOT NULL
+    lat                NUMERIC,
+    lon                NUMERIC
     );
 
 CREATE TABLE IF NOT EXISTS events
@@ -45,7 +45,8 @@ CREATE TABLE IF NOT EXISTS events
     title              VARCHAR(120)                NOT NULL,
     views              BIGINT,
     CONSTRAINT fk_event_to_user FOREIGN KEY (initiator_id) REFERENCES users (id),
-    CONSTRAINT fk_event_to_category FOREIGN KEY (category_id) REFERENCES categories (id)
+    CONSTRAINT fk_event_to_category FOREIGN KEY (category_id) REFERENCES categories (id),
+    CONSTRAINT fk_location FOREIGN KEY (location_id) REFERENCES location (id)
     );
 
 CREATE TABLE IF NOT EXISTS requests

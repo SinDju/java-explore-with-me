@@ -9,26 +9,22 @@ import ru.practicum.dto.CategoryDto;
 import ru.practicum.dto.NewCategoryDto;
 import ru.practicum.service.CategoryService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+
+@Slf4j
+@Validated
 @RestController
 @RequestMapping(path = "/admin/categories")
 @RequiredArgsConstructor
-@Slf4j
-@Validated
 public class CategoryControllerAdmin {
     private final CategoryService categoryService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto addCategory(@RequestBody CategoryDto categoryDto) {
-        log.info("POST запрос на создание категории с названием: {}", categoryDto);
-        return categoryService.addCategory(categoryDto);
-    }
-
-    @PatchMapping("/{catId}")
-    @ResponseStatus(HttpStatus.OK)
-    public CategoryDto updateCategory(@PathVariable Long catId, @RequestBody NewCategoryDto newCategoryDto) {
-        log.info("PATCH запрос на изменение категории с ID {}", catId);
-        return categoryService.updateCategory(catId, newCategoryDto);
+    public CategoryDto createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {
+        log.info("POST запрос на создание категории с названием: {}", newCategoryDto);
+        return categoryService.addCategory(newCategoryDto);
     }
 
     @DeleteMapping("/{catId}")
@@ -36,5 +32,13 @@ public class CategoryControllerAdmin {
     public void deleteCategory(@PathVariable Long catId) {
         log.info("DELETE запрос на удалении категории с ID {} ", catId);
         categoryService.deleteCategory(catId);
+    }
+
+    @PatchMapping("/{catId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CategoryDto updateCategory(@PathVariable(value = "catId") @Min(1) Long catId,
+                                      @RequestBody @Valid CategoryDto categoryDto) {
+        log.info("PATCH запрос на изменение категории с ID {}", catId);
+        return categoryService.updateCategory(catId, categoryDto);
     }
 }

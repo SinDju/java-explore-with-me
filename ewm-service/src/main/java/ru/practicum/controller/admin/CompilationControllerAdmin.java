@@ -10,23 +10,25 @@ import ru.practicum.dto.NewCompilationDto;
 import ru.practicum.dto.UpdateCompilationDto;
 import ru.practicum.service.CompilationService;
 
+import javax.validation.Valid;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/admin/compilations")
+@RequestMapping(path = "/admin/compilations")
 public class CompilationControllerAdmin {
     private final CompilationService compilationService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto addCompilation(@RequestBody NewCompilationDto compilationDto) {
+    public CompilationDto addCompilation(@RequestBody @Valid NewCompilationDto compilationDto) {
         log.info("POST запрос на создание подборки событий");
         return compilationService.addCompilation(compilationDto);
     }
 
     @PatchMapping("/{compId}")
-    public CompilationDto updateCompilation(@RequestBody UpdateCompilationDto update,
+    public CompilationDto updateCompilation(@RequestBody @Valid UpdateCompilationDto update,
                                             @PathVariable Long compId) {
         log.info("PATCH запрос на обнавление подборки событий");
         return compilationService.updateCompilation(compId, update);

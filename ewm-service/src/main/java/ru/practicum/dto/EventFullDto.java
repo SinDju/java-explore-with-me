@@ -9,10 +9,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @Builder
 public class EventFullDto {
     private Long id;

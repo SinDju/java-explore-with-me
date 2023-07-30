@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.*;
 import ru.practicum.service.EventService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -35,7 +36,7 @@ public class EventControllerPrivate {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto addEvent(@PathVariable(value = "userId") @Min(1) Long userId,
-                                       @RequestBody NewEventDto input) {
+                                       @RequestBody @Valid NewEventDto input) {
         log.info("POST запрос на создание события от пользователя с ID {}", userId);
         return eventService.addEvent(userId, input);
     }
@@ -52,7 +53,7 @@ public class EventControllerPrivate {
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEventByOwner(@PathVariable(value = "userId") @Min(0) Long userId,
                                            @PathVariable(value = "eventId") @Min(0) Long eventId,
-                                           @RequestBody UpdateEventUserRequest inputUpdate) {
+                                           @RequestBody @Valid UpdateEventUserRequest inputUpdate) {
         log.info("PATCH запрос на редоктирование события от пользователя с ID {}", userId);
         return eventService.updateEventByUsersIdAndEventIdFromUser(userId, eventId, inputUpdate);
     }

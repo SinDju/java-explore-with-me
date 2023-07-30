@@ -1,15 +1,16 @@
 package ru.practicum.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Getter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class NewCategoryDto {
     @NotBlank
-    @Size(min = 1, max = 50)
+    @Size(max = 50)
     private String name;
 }

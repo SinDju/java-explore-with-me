@@ -1,18 +1,22 @@
 package ru.practicum.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class CategoryDto {
     private Long id;
+    @NotNull
     @NotBlank
-    @Size(min = 1, max = 50)
+    @Length(max = 50)
     private String name;
 }

@@ -31,7 +31,7 @@ public class Event {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "initiator_id")
     private User initiator;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "location_id")
     private Location location;
     @Column(name = "paid")

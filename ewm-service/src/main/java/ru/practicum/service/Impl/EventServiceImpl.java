@@ -3,6 +3,7 @@ package ru.practicum.service.Impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,14 +21,8 @@ import ru.practicum.exception.ObjectNotFoundException;
 import ru.practicum.exception.ParametersException;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.mapper.RequestMapper;
-import ru.practicum.model.Category;
-import ru.practicum.model.Event;
-import ru.practicum.model.Request;
-import ru.practicum.model.User;
-import ru.practicum.repository.CategoryRepository;
-import ru.practicum.repository.EventRepository;
-import ru.practicum.repository.RequestRepository;
-import ru.practicum.repository.UserRepository;
+import ru.practicum.model.*;
+import ru.practicum.repository.*;
 import ru.practicum.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,12 +34,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@ComponentScan(basePackages = {"ru.practicum.client"})
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final EndpointHitClient statClient;
     private final RequestRepository requestRepository;
+    private final LocationRepository locationRepository;
 
     @Override
     public List<EventFullDto> getAllEventFromAdmin(List<Long> users, List<String> states, List<Long> categories,
@@ -101,7 +98,11 @@ public class EventServiceImpl implements EventService {
             updatePoint = 1;
         }
         if (updateEvent.getLocation() != null) {
-            oldEvent.setLocation(updateEvent.getLocation());
+           if (oldEvent.getLocation() == null) {
+               Location location = locationRepository.save(updateEvent.getLocation());
+               oldEvent.setLocation(location);
+           }
+           oldEvent.setLocation(updateEvent.getLocation());
             updatePoint = 1;
         }
         if (updateEvent.getPaid() != null) {
@@ -149,6 +150,7 @@ public class EventServiceImpl implements EventService {
         User user = checkUser(userId);
         checkDateTime(LocalDateTime.now(), eventDto.getEventDate());
         Category category = checkCategory(eventDto.getCategory());
+        locationRepository.save(eventDto.getLocation());
         Event event = EventMapper.toEvent(eventDto);
         event.setCategory(category);
         event.setInitiator(user);
@@ -347,6 +349,9 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
         Event event = checkEvent(eventId);
+        if (!event.getEventStatus().equals(EventStatus.PUBLISHED)) {
+            throw new ObjectNotFoundException("События с ID " + eventId + " не опубликованно");
+        }
         addStatsClient(request);
         getViewsOfEvents(List.of(event));
         return EventMapper.toEventFullDto(event);

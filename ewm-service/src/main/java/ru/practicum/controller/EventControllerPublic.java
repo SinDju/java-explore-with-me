@@ -2,6 +2,7 @@ package ru.practicum.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 @RequestMapping("/events")
+@ComponentScan(basePackages = {"ru.practicum.client"})
 public class EventControllerPublic {
     private final EventService eventService;
 
