@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS location
 (
     id                 BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY UNIQUE,
     lat                NUMERIC                     NOT NULL,
-    lon                NUMERIC                     NOT NULL,
+    lon                NUMERIC                     NOT NULL
     );
 
 CREATE TABLE IF NOT EXISTS events

@@ -1,10 +1,14 @@
 package ru.practicum.service.Impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.client.EndpointHitClient;
 import ru.practicum.dto.*;
@@ -26,9 +30,11 @@ import ru.practicum.repository.RequestRepository;
 import ru.practicum.repository.UserRepository;
 import ru.practicum.service.EventService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -286,6 +292,66 @@ public class EventServiceImpl implements EventService {
         }
     }
 
+    @Override
+    public List<EventShortDto> getAllEventFromPublic(String text, List<Long> categories, Boolean paid,
+                                                     LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                                     Boolean onlyAvailable, String sort, Integer from,
+                                                     Integer size, HttpServletRequest request) {
+        if (rangeEnd != null && rangeStart != null) {
+            if (rangeEnd.isBefore(rangeStart)) {
+                throw new ParametersException("Error: Дата окончания находится до даты начала");
+            }
+        }
+
+        Pageable pageable = PageRequest.of(from / size, size);
+        Specification<Event> specification = Specification.where(null);
+
+        if (text != null) {
+            specification = specification.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.or(
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("annotation")), "%" + text.toLowerCase() + "%"),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" + text.toLowerCase() + "%")
+                    ));
+        }
+
+        if (categories != null && !categories.isEmpty()) {
+            specification = specification.and((root, query, criteriaBuilder) ->
+                    root.get("category").get("id").in(categories));
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDateTime = Objects.requireNonNullElseGet(rangeStart, () -> now);
+        specification = specification.and((root, query, criteriaBuilder) ->
+                criteriaBuilder.greaterThan(root.get("eventDate"), startDateTime));
+
+        if (rangeEnd != null) {
+            specification = specification.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.lessThan(root.get("eventDate"), rangeEnd));
+        }
+
+        if (onlyAvailable != null && onlyAvailable) {
+            specification = specification.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("participantLimit"), 0));
+        }
+
+        specification = specification.and((root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("eventStatus"), EventStatus.PUBLISHED));
+
+        List<Event> resultEvents = eventRepository.findAll(specification, pageable).getContent();
+        addStatsClient(request);
+        getViewsOfEvents(resultEvents);
+
+        return resultEvents.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
+        Event event = checkEvent(eventId);
+        addStatsClient(request);
+        getViewsOfEvents(List.of(event));
+        return EventMapper.toEventFullDto(event);
+    }
+
     private void checkDateTime(LocalDateTime time, LocalDateTime dateTimeDto) {
         if (dateTimeDto.isBefore(time.plusHours(2))) {
             throw new ParametersException("Error: должно содержать дату, которая еще не наступила.");
@@ -358,4 +424,41 @@ public class EventServiceImpl implements EventService {
         rejectedRequests = requestRepository.findAllById(ids);
         return rejectedRequests;
     }
+
+    private void addStatsClient(HttpServletRequest request) {
+        String app = "ewm-service";
+        statClient.postStats(EndpointHitDto.builder()
+                .app(app)
+                .uri(request.getRequestURI())
+                .ip(request.getRemoteAddr())
+                .timestamp(LocalDateTime.now())
+                .build());
+    }
+
+    private void getViewsOfEvents(List<Event> events) {
+        List<String> uris = events.stream()
+                .map(event -> String.format("/events/%s", event.getId()))
+                .collect(Collectors.toList());
+
+        ResponseEntity<Object> response = statClient.getStats("2000-01-01 00:00:00", "2100-01-01 00:00:00",
+                uris, false);
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<ViewStatsDto> viewStatsList = mapper.convertValue(response.getBody(), new TypeReference<>() {
+        });
+
+        for (Event event : events) {
+            ViewStatsDto currentViewStats = viewStatsList.stream()
+                    .filter(viewStatsDto -> {
+                        Long eventIdOfViewStats = Long.parseLong(viewStatsDto.getUri().substring("/events/".length()));
+                        return eventIdOfViewStats.equals(event.getId());
+                    })
+                    .findFirst()
+                    .orElse(null);
+
+            Long views = (currentViewStats != null) ? currentViewStats.getHits() : 0;
+            event.setViews(views.intValue() + 1);
+        }
+    }
+
 }

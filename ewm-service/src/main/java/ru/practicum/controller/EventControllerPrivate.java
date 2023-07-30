@@ -29,7 +29,6 @@ public class EventControllerPrivate {
                                                     @RequestParam(value = "size", required = false, defaultValue = "10")
                                                     @Positive Integer size) {
         log.info("GET запрос на получения событий пользователя с ID {}", userId);
-        //final Pageable pageable = PageRequest.of(from / size, size, Sort.by(Sort.Direction.ASC, "id"));
         return eventService.getEventsByUserId(userId, from, size);
     }
 
