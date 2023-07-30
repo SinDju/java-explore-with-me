@@ -11,7 +11,6 @@ import ru.practicum.model.Location;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
