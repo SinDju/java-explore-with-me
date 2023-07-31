@@ -35,7 +35,7 @@ public class EndpointHitClient extends BaseClient {
         Map<String, Object> parameters = Map.of(
                 "start", String.format(start, DATE_FORMAT),
                 "end", String.format(end, DATE_FORMAT),
-                "uris", uris.toString(),
+                "uris", String.join(",", uris),
                 "unique", unique.toString()
         );
         return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
