@@ -17,7 +17,7 @@ public class Event {
     private Long id;
     @Column(name = "annotation", nullable = false, length = 2000)
     private String annotation;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
     @Column(name = "confirmed_requests")

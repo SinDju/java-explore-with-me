@@ -50,7 +50,6 @@ public class EventControllerPrivate {
     }
 
     @PatchMapping("/{eventId}")
-    @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEventByOwner(@PathVariable(value = "userId") @Min(0) Long userId,
                                            @PathVariable(value = "eventId") @Min(0) Long eventId,
                                            @RequestBody @Valid UpdateEventUserRequest inputUpdate) {

@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.Length;
 import ru.practicum.enums.StateAction;
 import ru.practicum.model.Location;
 
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -19,7 +18,6 @@ import java.time.LocalDateTime;
 public class UpdateEventUserRequest {
     @Length(min = 20, max = 2000)
     private String annotation;
-    @Positive
     private Long category;
     @Length(min = 20, max = 7000)
     private String description;

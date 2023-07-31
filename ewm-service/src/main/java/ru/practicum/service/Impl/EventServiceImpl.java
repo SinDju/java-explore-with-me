@@ -150,7 +150,7 @@ public class EventServiceImpl implements EventService {
         User user = checkUser(userId);
         checkDateTime(LocalDateTime.now(), eventDto.getEventDate());
         Category category = checkCategory(eventDto.getCategory());
-        locationRepository.save(eventDto.getLocation());
+        Location location = locationRepository.save(eventDto.getLocation());
         Event event = EventMapper.toEvent(eventDto);
         event.setCategory(category);
         event.setInitiator(user);
@@ -158,6 +158,7 @@ public class EventServiceImpl implements EventService {
         event.setCreatedDate(createdOn);
         event.setConfirmedRequests(0);
         event.setViews(0);
+        event.setLocation(location);
         Event eventSaved = eventRepository.save(event);
         return EventMapper.toEventFullDto(eventSaved);
     }
