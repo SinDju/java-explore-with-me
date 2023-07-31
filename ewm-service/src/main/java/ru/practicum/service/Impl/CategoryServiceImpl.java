@@ -63,7 +63,8 @@ public class CategoryServiceImpl implements CategoryService {
                 new ObjectNotFoundException("Категории с ID " + catId + " не существует"));
         checkUniqNameCategory(categoryDto.getName());
         oldCategory.setName(categoryDto.getName());
-        return CategoryMapper.toCategoryDto(oldCategory);
+        Category updatedCategory = categoryRepository.save(oldCategory);
+        return CategoryMapper.toCategoryDto(updatedCategory);
     }
 
     private void checkUniqNameCategory(String name) {
