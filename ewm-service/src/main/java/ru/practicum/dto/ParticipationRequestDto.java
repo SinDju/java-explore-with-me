@@ -6,9 +6,10 @@ import ru.practicum.enums.RequestStatus;
 
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ParticipationRequestDto {
     private Long id;

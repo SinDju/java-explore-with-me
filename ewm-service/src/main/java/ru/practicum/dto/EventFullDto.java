@@ -8,9 +8,10 @@ import ru.practicum.model.Location;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class EventFullDto {
     private Long id;

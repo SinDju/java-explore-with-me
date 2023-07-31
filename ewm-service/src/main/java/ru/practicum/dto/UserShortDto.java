@@ -2,9 +2,10 @@ package ru.practicum.dto;
 
 import lombok.*;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UserShortDto {
     private Long id;

@@ -4,9 +4,10 @@ import lombok.*;
 
 import java.util.List;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class CaseUpdatedStatusDto {
     private List<Long> idsFromUpdateStatus;

@@ -1,10 +1,7 @@
 package ru.practicum.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.enums.StateAction;
 import ru.practicum.model.Location;
@@ -13,9 +10,10 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UpdateEventAdminRequest {
     @Length(min = 20, max = 2000)

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.enums.StateAction;
 import ru.practicum.model.Location;
@@ -13,8 +14,9 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UpdateEventUserRequest {
     @Length(min = 20, max = 2000)
     private String annotation;

@@ -5,9 +5,10 @@ import ru.practicum.enums.RequestStatus;
 
 import java.util.List;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class EventRequestStatusUpdateRequest {
     private List<Long> requestIds;
