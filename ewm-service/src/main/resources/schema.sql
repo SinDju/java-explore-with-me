@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS location
     id                 BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY UNIQUE,
     lat                NUMERIC,
     lon                NUMERIC
-    );
+);
 
 CREATE TABLE IF NOT EXISTS events
 (
