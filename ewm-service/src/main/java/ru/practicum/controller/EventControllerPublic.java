@@ -23,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 @RequestMapping(path = "/events")
-@ComponentScan(basePackages = {"ru.practicum.client"})
 public class EventControllerPublic {
     private final EventService eventService;
 
