@@ -3,21 +3,19 @@ services:
   stats-server:
     build: ./stats/stats-server
     image: stats-server-image
-    container_name: stats-server-container
+    container_name: stats-server
     ports:
       - "9090:9090"
     depends_on:
       - stats-db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/statistics
-      - SPRING_DATASOURCE_USERNAME=stats
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
 
   stats-db:
     image: postgres:14-alpine
-    container_name: my_stats-db
-
+    container_name: statistics
+    ports:
+      - "6451:5432"
     environment:
       - POSTGRES_DB=statistics
       - POSTGRES_USER=stats
@@ -26,24 +24,23 @@ services:
   ewm-service:
     build: ewm-service
     image: ewm-service-image
-    container_name: ewm-service-container
+    container_name: ewm-service
     ports:
       - "8080:8080"
     depends_on:
       - ewm-db
+      - stats-server
     environment:
+      - STAT_SERVER_URL=http://stats-server:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
-      - SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
-      - SPRING_DATASOURCE_USERNAME=stats
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SERVICES_STATSSERVICE_URI=http://stats-server:9090
       - JAVA_OPTS=-Djdk.httpclient.HttpClient.log=errors,requests
 
 
   ewm-db:
     image: postgres:14-alpine
-    container_name: my_ewm-service-db
-
+    container_name: ewm
+    ports:
+      - "6452:5432"
     environment:
       - POSTGRES_DB=ewm
       - POSTGRES_USER=stats
