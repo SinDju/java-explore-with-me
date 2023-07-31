@@ -1,4 +1,4 @@
-package ru.practicum.controller.admin;
+package ru.practicum.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,11 +14,11 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
+@Slf4j
+@Validated
 @RestController
 @RequestMapping(path = "/admin/users")
-@Validated
 @RequiredArgsConstructor
-@Slf4j
 public class UsersControllerAdmin {
     private final UserService userService;
 

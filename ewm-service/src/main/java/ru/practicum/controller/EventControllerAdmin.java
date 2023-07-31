@@ -1,4 +1,4 @@
-package ru.practicum.controller.admin;
+package ru.practicum.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/admin/events")
+@RequestMapping(path = "/admin/events")
 public class EventControllerAdmin {
     private final EventService eventService;
 

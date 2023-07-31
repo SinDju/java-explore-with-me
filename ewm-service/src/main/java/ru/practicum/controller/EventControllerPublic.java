@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/events")
+@RequestMapping(path = "/events")
 @ComponentScan(basePackages = {"ru.practicum.client"})
 public class EventControllerPublic {
     private final EventService eventService;

@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("users/{userId}/requests")
+@RequestMapping(path = "users/{userId}/requests")
 public class RequestControllerPrivate {
     private final RequestService requestService;
 
