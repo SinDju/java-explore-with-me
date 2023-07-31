@@ -17,8 +17,7 @@ services:
   stats-db:
     image: postgres:14-alpine
     container_name: my_stats-db
-    ports:
-      - "6542:5432"
+
     environment:
       - POSTGRES_DB=statistics
       - POSTGRES_USER=stats
@@ -44,8 +43,7 @@ services:
   ewm-db:
     image: postgres:14-alpine
     container_name: my_ewm-service-db
-    ports:
-      - "6541:5432"
+
     environment:
       - POSTGRES_DB=ewm
       - POSTGRES_USER=stats
