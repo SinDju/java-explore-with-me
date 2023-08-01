@@ -44,26 +44,30 @@ public class EventServiceImpl implements EventService {
     private final LocationRepository locationRepository;
 
     @Override
-    public List<EventFullDto> getAllEventFromAdmin(List<Long> users, List<String> states, List<Long> categories,
-                                                   LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from,
-                                                   Integer size) {
-        PageRequest pageable = PageRequest.of(from / size, size);
+    public List<EventFullDto> getAllEventFromAdmin(SearchEventParamsAdmin searchEventParamsAdmin) {
+        PageRequest pageable = PageRequest.of(searchEventParamsAdmin.getFrom() / searchEventParamsAdmin.getSize(),
+                searchEventParamsAdmin.getSize());
         Specification<Event> specification = Specification.where(null);
 
-        if (users != null && !users.isEmpty()) {
-            specification = specification.and((root, query, criteriaBuilder) -> root.get("initiator").get("id").in(users));
+        if (searchEventParamsAdmin.getUsers() != null && !searchEventParamsAdmin.getUsers().isEmpty()) {
+            specification = specification.and((root, query, criteriaBuilder) ->
+                    root.get("initiator").get("id").in(searchEventParamsAdmin.getUsers()));
         }
-        if (states != null && !states.isEmpty()) {
-            specification = specification.and((root, query, criteriaBuilder) -> root.get("eventStatus").as(String.class).in(states));
+        if (searchEventParamsAdmin.getStates() != null && !searchEventParamsAdmin.getStates().isEmpty()) {
+            specification = specification.and((root, query, criteriaBuilder) ->
+                    root.get("eventStatus").as(String.class).in(searchEventParamsAdmin.getStates()));
         }
-        if (categories != null && !categories.isEmpty()) {
-            specification = specification.and((root, query, criteriaBuilder) -> root.get("category").get("id").in(categories));
+        if (searchEventParamsAdmin.getCategories() != null && !searchEventParamsAdmin.getCategories().isEmpty()) {
+            specification = specification.and((root, query, criteriaBuilder) ->
+                    root.get("category").get("id").in(searchEventParamsAdmin.getCategories()));
         }
-        if (rangeEnd != null) {
-            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("eventDate"), rangeEnd));
+        if (searchEventParamsAdmin.getRangeEnd() != null) {
+            specification = specification.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.lessThanOrEqualTo(root.get("eventDate"), searchEventParamsAdmin.getRangeEnd()));
         }
-        if (rangeStart != null) {
-            specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("eventDate"), rangeStart));
+        if (searchEventParamsAdmin.getRangeStart() != null) {
+            specification = specification.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("eventDate"), searchEventParamsAdmin.getRangeStart()));
         }
         Page<Event> events = eventRepository.findAll(specification, pageable);
         return events.getContent().stream().map(EventMapper::toEventFullDto).collect(Collectors.toList());
@@ -97,11 +101,11 @@ public class EventServiceImpl implements EventService {
             updatePoint = 1;
         }
         if (updateEvent.getLocation() != null) {
-           if (oldEvent.getLocation() == null) {
-               Location location = locationRepository.save(updateEvent.getLocation());
-               oldEvent.setLocation(location);
-           }
-           oldEvent.setLocation(updateEvent.getLocation());
+            if (oldEvent.getLocation() == null) {
+                Location location = locationRepository.save(updateEvent.getLocation());
+                oldEvent.setLocation(location);
+            }
+            oldEvent.setLocation(updateEvent.getLocation());
             updatePoint = 1;
         }
         if (updateEvent.getPaid() != null) {
@@ -295,43 +299,43 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventShortDto> getAllEventFromPublic(String text, List<Long> categories, Boolean paid,
-                                                     LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                                     Boolean onlyAvailable, String sort, Integer from,
-                                                     Integer size, HttpServletRequest request) {
-        if (rangeEnd != null && rangeStart != null) {
-            if (rangeEnd.isBefore(rangeStart)) {
+    public List<EventShortDto> getAllEventFromPublic(SearchEventParams searchEventParams, HttpServletRequest request) {
+        if (searchEventParams.getRangeEnd() != null && searchEventParams.getRangeStart() != null) {
+            if (searchEventParams.getRangeEnd().isBefore(searchEventParams.getRangeStart())) {
                 throw new ParametersException("Error: Дата окончания находится до даты начала");
             }
         }
         addStatsClient(request);
-        Pageable pageable = PageRequest.of(from / size, size);
+        Pageable pageable = PageRequest.of(searchEventParams.getFrom() / searchEventParams.getSize(),
+                searchEventParams.getSize());
         Specification<Event> specification = Specification.where(null);
 
-        if (text != null) {
+        if (searchEventParams.getText() != null) {
             specification = specification.and((root, query, criteriaBuilder) ->
                     criteriaBuilder.or(
-                            criteriaBuilder.like(criteriaBuilder.lower(root.get("annotation")), "%" + text.toLowerCase() + "%"),
-                            criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" + text.toLowerCase() + "%")
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("annotation")), "%"
+                                    + searchEventParams.getText().toLowerCase() + "%"),
+                            criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%"
+                                    + searchEventParams.getText().toLowerCase() + "%")
                     ));
         }
 
-        if (categories != null && !categories.isEmpty()) {
+        if (searchEventParams.getCategories() != null && !searchEventParams.getCategories().isEmpty()) {
             specification = specification.and((root, query, criteriaBuilder) ->
-                    root.get("category").get("id").in(categories));
+                    root.get("category").get("id").in(searchEventParams.getCategories()));
         }
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startDateTime = Objects.requireNonNullElseGet(rangeStart, () -> now);
+        LocalDateTime startDateTime = Objects.requireNonNullElseGet(searchEventParams.getRangeStart(), () -> now);
         specification = specification.and((root, query, criteriaBuilder) ->
                 criteriaBuilder.greaterThan(root.get("eventDate"), startDateTime));
 
-        if (rangeEnd != null) {
+        if (searchEventParams.getRangeEnd() != null) {
             specification = specification.and((root, query, criteriaBuilder) ->
-                    criteriaBuilder.lessThan(root.get("eventDate"), rangeEnd));
+                    criteriaBuilder.lessThan(root.get("eventDate"), searchEventParams.getRangeEnd()));
         }
 
-        if (onlyAvailable != null && onlyAvailable) {
+        if (searchEventParams.getOnlyAvailable() != null) {
             specification = specification.and((root, query, criteriaBuilder) ->
                     criteriaBuilder.greaterThanOrEqualTo(root.get("participantLimit"), 0));
         }

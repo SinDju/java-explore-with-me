@@ -2,18 +2,15 @@ package ru.practicum.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EventFullDto;
+import ru.practicum.dto.SearchEventParamsAdmin;
 import ru.practicum.dto.UpdateEventAdminRequest;
 import ru.practicum.service.EventService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -25,19 +22,9 @@ public class EventControllerAdmin {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventFullDto> searchEvents(@RequestParam(required = false) List<Long> users,
-                                           @RequestParam(required = false) List<String> states,
-                                           @RequestParam(required = false) List<Long> categories,
-                                           @RequestParam(required = false) @DateTimeFormat
-                                                   (pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-                                           @RequestParam(required = false) @DateTimeFormat
-                                                   (pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-                                           @RequestParam(value = "from", required = false, defaultValue = "0")
-                                               @PositiveOrZero Integer from,
-                                           @RequestParam(value = "size", required = false, defaultValue = "10")
-                                               @Positive Integer size) {
+    public List<EventFullDto> searchEvents(@Valid SearchEventParamsAdmin searchEventParamsAdmin) {
         log.info("GET запрос на получение списка событий");
-        return eventService.getAllEventFromAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
+        return eventService.getAllEventFromAdmin(searchEventParamsAdmin);
     }
 
     @PatchMapping("/{eventId}")
