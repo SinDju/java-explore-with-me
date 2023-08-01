@@ -3,7 +3,7 @@ package ru.practicum.dto;
 import lombok.*;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
@@ -12,9 +12,9 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class UserDto {
     private Long id;
-    @NotEmpty
+    @NotBlank
     private String name;
-    @NotEmpty
+    @NotBlank
     @Email
     private String email;
 }
