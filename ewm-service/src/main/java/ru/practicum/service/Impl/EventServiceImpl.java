@@ -464,5 +464,3 @@ public class EventServiceImpl implements EventService {
         eventRepository.saveAll(events);
     }
 }
-
-}
