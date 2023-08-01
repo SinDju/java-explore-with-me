@@ -5,7 +5,10 @@ import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.model.Location;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 @Getter

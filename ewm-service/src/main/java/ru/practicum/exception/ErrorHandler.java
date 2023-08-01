@@ -44,6 +44,7 @@ public class ErrorHandler {
                 .reason("Incorrect parameters")
                 .build();
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handlerSQLException(PSQLException e) {
@@ -51,7 +52,7 @@ public class ErrorHandler {
         return ApiError.builder()
                 .status(HttpStatus.CONFLICT.toString())
                 .message(e.getMessage())
-                .reason("Request is bad")
+                .reason("Request is CONFLICT")
                 .build();
     }
 }
