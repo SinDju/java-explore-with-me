@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto addUser(NewUserRequest newUserRequest) {
         if (userRepository.existsByEmail(newUserRequest.getEmail())) {
-            throw new ConflictException("Пользователь с такой почтой уже зарегестрирован");
+            throw new ConflictException("Пользователь с такой почтой уже зарегестрирован.");
         }
         User user = userRepository.save(UserMapper.toUser(newUserRequest));
         return UserMapper.toUserDto(user);
