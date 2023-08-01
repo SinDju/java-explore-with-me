@@ -88,7 +88,7 @@ public class EventServiceImpl implements EventService {
         }
         if (updateEvent.getEventDate() != null) {
             if (updateEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-                throw new ParametersException("Lата начала изменяемого события должна " +
+                throw new ParametersException("Дата начала изменяемого события должна " +
                         "быть не ранее чем за час от даты публикации.");
             }
             oldEvent.setEventDate(updateEvent.getEventDate());
@@ -302,7 +302,7 @@ public class EventServiceImpl implements EventService {
                 throw new ParametersException("Error: Дата окончания находится до даты начала");
             }
         }
-
+        addStatsClient(request);
         Pageable pageable = PageRequest.of(from / size, size);
         Specification<Event> specification = Specification.where(null);
 
@@ -338,7 +338,6 @@ public class EventServiceImpl implements EventService {
                 criteriaBuilder.equal(root.get("eventStatus"), EventStatus.PUBLISHED));
 
         List<Event> resultEvents = eventRepository.findAll(specification, pageable).getContent();
-        addStatsClient(request);
         getViewsOfEvents(resultEvents);
 
         return resultEvents.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
@@ -446,14 +445,14 @@ public class EventServiceImpl implements EventService {
         ResponseEntity<Object> response = statClient.getStats("2000-01-01 00:00:00", "2100-01-01 00:00:00",
                 uris, false);
 
-        ObjectMapper mapper = new ObjectMapper();
-        List<ViewStatsDto> viewStatsList = mapper.convertValue(response.getBody(), new TypeReference<>() {
+        final ObjectMapper mapper = new ObjectMapper();
+        final List<ViewStatsDto> viewStatsList = mapper.convertValue(response.getBody(), new TypeReference<List<ViewStatsDto>>() {
         });
 
         for (Event event : events) {
             ViewStatsDto currentViewStats = viewStatsList.stream()
-                    .filter(viewStatsDto -> {
-                        Long eventIdOfViewStats = Long.parseLong(viewStatsDto.getUri().substring("/events/".length()));
+                    .filter(statsDto -> {
+                        Long eventIdOfViewStats = Long.parseLong(statsDto.getUri().substring("/events/".length()));
                         return eventIdOfViewStats.equals(event.getId());
                     })
                     .findFirst()
@@ -462,6 +461,8 @@ public class EventServiceImpl implements EventService {
             Long views = (currentViewStats != null) ? currentViewStats.getHits() : 0;
             event.setViews(views.intValue() + 1);
         }
+        eventRepository.saveAll(events);
     }
+}
 
 }

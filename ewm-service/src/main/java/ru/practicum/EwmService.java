@@ -7,14 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"ru.practicum.service", "ru.practicum.client"})
 public class EwmService {
     public static void main(String[] args) {
         SpringApplication.run(EwmService.class, args);
     }
 
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
 }
