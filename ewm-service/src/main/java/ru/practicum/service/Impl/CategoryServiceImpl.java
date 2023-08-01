@@ -57,11 +57,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto updateCategory(Long catId, CategoryDto categoryDto) {
-        Category oldCategory = categoryRepository.findById(catId).orElseThrow(() ->
+        final Category oldCategory = categoryRepository.findById(catId).orElseThrow(() ->
                 new ObjectNotFoundException("Категории с ID " + catId + " не существует"));
-        checkUniqNameCategory(categoryDto.getName());
-        oldCategory.setName(categoryDto.getName());
-        Category updatedCategory = categoryRepository.save(oldCategory);
+        if (categoryDto.getName() != null) {
+            oldCategory.setName(categoryDto.getName());
+        }
+        final Category updatedCategory = categoryRepository.save(oldCategory);
         return CategoryMapper.toCategoryDto(updatedCategory);
     }
 

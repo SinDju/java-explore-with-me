@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@ComponentScan(basePackages = {"ru.practicum.client"})
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
@@ -89,7 +88,6 @@ public class EventServiceImpl implements EventService {
             updatePoint = 1;
         }
         if (updateEvent.getEventDate() != null) {
-            //дата начала изменяемого события должна быть не ранее чем за час от даты публикации.
             if (updateEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
                 throw new ParametersException("Lата начала изменяемого события должна " +
                         "быть не ранее чем за час от даты публикации.");
