@@ -3,7 +3,7 @@ services:
   stats-server:
     build: ./stats/stats-server
     image: stats-server-image
-    container_name: stats-server-container
+    container_name: stats-server
     ports:
       - "9090:9090"
     depends_on:
@@ -12,22 +12,23 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/statistics
       - SPRING_DATASOURCE_USERNAME=stats
       - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - JAVA_OPTS=-Djdk.httpclient.HttpClient.log=errors,requests
 
   stats-db:
     image: postgres:14-alpine
-    container_name: my_stats-db
-    ports:
-      - "6542:5432"
+    volumes:
+      - /var/lib/postgresql/data/
+    container_name: statistics
+
     environment:
       - POSTGRES_DB=statistics
       - POSTGRES_USER=stats
       - POSTGRES_PASSWORD=root
 
   ewm-service:
-    build: ewm-service
+    build: ./ewm-service
     image: ewm-service-image
-    container_name: ewm-service-container
+    container_name: ewm-service
     ports:
       - "8080:8080"
     depends_on:
@@ -35,7 +36,7 @@ services:
       - stats-server
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
-      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_USERNAME=stats
       - SPRING_DATASOURCE_PASSWORD=root
       - SERVICES_STATSSERVICE_URI=http://stats-server:9090
       - JAVA_OPTS=-Djdk.httpclient.HttpClient.log=errors,requests
@@ -43,10 +44,11 @@ services:
 
   ewm-db:
     image: postgres:14-alpine
-    container_name: my_ewm-service-db
-    ports:
-      - "6541:5432"
+    volumes:
+      - /var/lib/postgresql/data/
+    container_name: ewm
+
     environment:
       - POSTGRES_DB=ewm
-      - POSTGRES_USER=root
+      - POSTGRES_USER=stats
       - POSTGRES_PASSWORD=root

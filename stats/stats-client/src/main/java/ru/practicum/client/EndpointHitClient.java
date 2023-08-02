@@ -14,10 +14,9 @@ import java.util.Map;
 
 @Service
 public class EndpointHitClient extends BaseClient {
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     @Autowired
-    public EndpointHitClient(@Value("${stats-server.url}") String serverUrl, RestTemplateBuilder builder) {
+    public EndpointHitClient(@Value("${statistic-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
@@ -31,12 +30,12 @@ public class EndpointHitClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getStats(String start, String end, List<String> uris,
-                                                       Boolean unique) {
+                                           Boolean unique) {
         Map<String, Object> parameters = Map.of(
-                "start", String.format(start, DATE_FORMAT),
-                "end", String.format(end, DATE_FORMAT),
-                "uris", uris.toString(),
-                "unique", unique.toString()
+                "start", start,
+                "end", end,
+                "uris", uris,
+                "unique", unique
         );
         return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }
