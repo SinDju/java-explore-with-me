@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS events CASCADE;
 DROP TABLE IF EXISTS compilations CASCADE;
 DROP TABLE IF EXISTS compilations_to_event CASCADE;
 DROP TABLE If EXISTS requests CASCADE;
+DROP TABLE If EXISTS ratings CASCADE;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -74,4 +75,12 @@ CREATE TABLE IF NOT EXISTS compilations_to_event
     compilation_id BIGINT NOT NULL,
     CONSTRAINT fk_event_compilation_to_event FOREIGN KEY (event_id) REFERENCES events (id) ON UPDATE CASCADE,
     CONSTRAINT fk_event_compilation_to_compilation FOREIGN KEY (compilation_id) REFERENCES compilations (id) ON UPDATE CASCADE
+    );
+
+create table IF NOT EXISTS ratings
+(
+    id         BIGINT       GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id    BIGINT       NOT NULL REFERENCES users (user_id) ON delete CASCADE,
+    event_id   BIGINT       NOT NULL REFERENCES events (event_id) ON delete CASCADE,
+    rating     BIGINT
     );
