@@ -3,7 +3,6 @@ package ru.practicum.service.Impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.dto.EventDtoRating;
 import ru.practicum.dto.RatingDto;
 import ru.practicum.dto.RatingDtoEvent;
 import ru.practicum.dto.RatingDtoUser;
@@ -22,7 +21,6 @@ import ru.practicum.repository.UserRepository;
 import ru.practicum.service.RatingService;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,7 +92,6 @@ public class RatingServiceImpl implements RatingService {
 
     @Transactional
     @Override
-    // в случае удаления лайка дизлайка необходимо уменьшить рейтинг в таблице рейтинга
     public void deleteLikeOrDislike(Long likesOrDislikesId, Long userId) {
         checkUser(userId);
         RatingsLikesOrDislikes likesOrDislikes = likesOrDislikesRepository.findById(likesOrDislikesId).orElseThrow(() ->
