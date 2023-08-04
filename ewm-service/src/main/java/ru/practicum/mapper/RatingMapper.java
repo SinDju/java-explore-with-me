@@ -4,14 +4,15 @@ import lombok.experimental.UtilityClass;
 import ru.practicum.dto.*;
 import ru.practicum.model.Event;
 import ru.practicum.model.Rating;
+import ru.practicum.model.RatingsLikesOrDislikes;
 import ru.practicum.model.User;
 
 @UtilityClass
 public class RatingMapper {
-    public Rating toRating(Event event, User user, Long rating) {
+
+    public Rating toRating(RatingsLikesOrDislikes likesOrDislikes, Long rating) {
         return Rating.builder()
-                .event(event)
-                .user(user)
+                .event(likesOrDislikes.getEvent())
                 .rating(rating)
                 .build();
     }
@@ -25,10 +26,10 @@ public class RatingMapper {
                 .build();
     }
 
-    public RatingDtoEvent toRatingDtoEvent(Long rating, Event event) {
+    public RatingDtoEvent toRatingDtoEvent(Rating rating) {
         return RatingDtoEvent.builder()
-                .rating(rating)
-                .event(EventMapper.toEventShortDto(event))
+                .rating(rating.getRating())
+                .event(EventMapper.toEventShortDto(rating.getEvent()))
                 .build();
     }
 

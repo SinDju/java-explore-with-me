@@ -18,5 +18,5 @@ public interface RatingService {
 
     RatingDto addLike(Long eventId, Long userId);
 
-    void deleteLikeOrDislike(Long ratingId, Long userId);
+    void deleteLikeOrDislike(Long likesOrDislikesId, Long userId);
 }

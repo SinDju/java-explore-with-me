@@ -21,20 +21,20 @@ public class RatingController {
 
     @PostMapping("/{eventId}/like/{userId}")
     public RatingDto addLike(@PathVariable @Positive Long eventId, @PathVariable @Positive Long userId) {
-        log.info("PUT запрос на добавление лайка от пользователя с event_id {} в отзыв с event_id: {}", eventId, userId);
+        log.info("POST запрос на добавление лайка от пользователя с event_id {} в отзыв с event_id: {}", eventId, userId);
         return ratingService.addLike(eventId, userId);
     }
 
     @PostMapping("/{eventId}/dislike/{userId}")
     public RatingDto addDislike(@PathVariable @Positive Long eventId, @PathVariable @Positive Long userId) {
-        log.info("PUT запрос на добавление дизлайка от пользователя с id {} в отзыв с id: {}", eventId, userId);
+        log.info("POST запрос на добавление дизлайка от пользователя с id {} в отзыв с id: {}", eventId, userId);
         return ratingService.addDislike(eventId, userId);
     }
 
-    @DeleteMapping("/{ratingId}/users/{userId}")
-    public void deleteLikeOrDislike(@PathVariable @Positive Long ratingId, @PathVariable @Positive Long userId) {
-        log.info("DELETE запрос на удаление лайка или дизлайка с id {} от пользователя с id {}", ratingId, userId);
-        ratingService.deleteLikeOrDislike(ratingId, userId);
+    @DeleteMapping("/{likesOrDislikesId}/users/{userId}")
+    public void deleteLikeOrDislike(@PathVariable @Positive Long likesOrDislikesId, @PathVariable @Positive Long userId) {
+        log.info("DELETE запрос на удаление лайка или дизлайка с id {} от пользователя с id {}", likesOrDislikesId, userId);
+        ratingService.deleteLikeOrDislike(likesOrDislikesId, userId);
     }
 
     @GetMapping("/{eventId}")

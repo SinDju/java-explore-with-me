@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS compilations CASCADE;
 DROP TABLE IF EXISTS compilations_to_event CASCADE;
 DROP TABLE If EXISTS requests CASCADE;
 DROP TABLE If EXISTS ratings CASCADE;
+DROP TABLE If EXISTS ratings_likes_dislikes CASCADE;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -79,8 +80,18 @@ CREATE TABLE IF NOT EXISTS compilations_to_event
 
 create table IF NOT EXISTS ratings
 (
-    id         BIGINT       GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id    BIGINT       NOT NULL REFERENCES users (user_id) ON delete CASCADE,
-    event_id   BIGINT       NOT NULL REFERENCES events (event_id) ON delete CASCADE,
-    rating     BIGINT
+    id         BIGINT       GENERATED ALWAYS AS IDENTITY PRIMARY KEY UNIQUE,
+    event_id   BIGINT       NOT NULL,
+    rating     BIGINT,
+    CONSTRAINT fk_rating_event_id FOREIGN KEY (event_id) REFERENCES events (id)
+    );
+
+create table IF NOT EXISTS ratings_likes_dislikes
+(
+    id         BIGINT       GENERATED ALWAYS AS IDENTITY PRIMARY KEY UNIQUE,
+    user_id    BIGINT NOT NULL,
+    event_id   BIGINT NOT NULL,
+    is_positive BOOLEAN,
+    CONSTRAINT fk_ratings_likes_id FOREIGN KEY (event_id) REFERENCES events (id),
+    CONSTRAINT fk_ratings_likes_user_id FOREIGN KEY (user_id) REFERENCES users (id)
     );
