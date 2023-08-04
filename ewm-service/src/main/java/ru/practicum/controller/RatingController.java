@@ -51,7 +51,7 @@ public class RatingController {
 
     @GetMapping("/users/{userId}")
     public RatingDtoUser getRatingByUserId(@PathVariable @Positive Long userId) {
-        log.info("GET запрос на получение рейтинга автора с id: {}", userId);
+        log.info("GET запрос на получение рейтинга автора с ID: {}", userId);
         return ratingService.getRatingByUserId(userId);
     }
 }
